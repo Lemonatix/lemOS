@@ -35,15 +35,10 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 
 ## 📈 Roadmap
  - Minimal bootable system
-
  - Lemon shell (lemsh)
-
  - Filesystem and basic I/O
-
  - GUI prototype
-
  - Package manager (lemonpkg?)
-
  - Optional science-themed wallpapers & Easter eggs 🍋🪐
 
 ## 📜 License
