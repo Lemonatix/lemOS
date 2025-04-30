@@ -1,6 +1,6 @@
 # 🍋 lemOS
 
-**lemOS** is a **l**ightweight, **e**fficient and **m**odular operating system — inspired by science, lemons, and minimalism.  
+**lemOS** is a $${\color{l}yellow}$$lightweight, $${\color{e}yellow}$$fficient and $${\color{m}yewllow}$$odular operating system — inspired by science, lemons, and minimalism.  
 Created originally by [Lemonatix](https://github.com/Lemonatix), lemOS blends playful aesthetics with a powerful, customizable UNIX-like core.
 
 > _"From Lemaître to Lemon — the Big Bang of your desktop experience."_
