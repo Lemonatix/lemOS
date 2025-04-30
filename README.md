@@ -25,4 +25,4 @@ lemOS/
 ├── docs/             # Documentation (licensed under CC BY 4.0)
 ├── assets/           # Icons, wallpapers, and logo
 ├── scripts/          # Build tools and install scripts
-└── LICENSE           # Software license (GPL)
+└── LICENSE           # Software license (GNU GPL 3.0)
