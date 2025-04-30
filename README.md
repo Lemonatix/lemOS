@@ -29,9 +29,9 @@ lemOS/
 ```
 
 ## 💬 Why “lemOS”?
-The name is inspired of my username **Lem**onatix, as well as 
+The name is inspired of my username <code>Lem</code>onatix, as well as 
 
-**Lem**aître the father of the Big Bang Theory.
+<code>Lem</code>aître the father of the Big Bang Theory.
 
 ## 📈 Roadmap
  - Minimal bootable system
