@@ -29,22 +29,22 @@ lemOS/
 ```
 
 ## 💬 Why “lemOS”?
-The name is inspired of my username *Lem*onatix, as well as 
+The name is inspired of my username **Lem**onatix, as well as 
 
-*Lem*aître the father of the Big Bang Theory.
+**Lem**aître the father of the Big Bang Theory.
 
 ## 📈 Roadmap
- Minimal bootable system
+ - Minimal bootable system
 
- Lemon shell (lemsh)
+ - Lemon shell (lemsh)
 
- Filesystem and basic I/O
+ - Filesystem and basic I/O
 
- GUI prototype
+ - GUI prototype
 
- Package manager (lemonpkg?)
+ - Package manager (lemonpkg?)
 
- Optional physics-themed wallpapers & Easter eggs 🍋🪐
+ - Optional science-themed wallpapers & Easter eggs 🍋🪐
 
 ## 📜 License
 Code: Licensed under the MIT License — free for personal and commercial use.
