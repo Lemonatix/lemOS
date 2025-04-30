@@ -34,9 +34,9 @@ Code: Licensed under the MIT License — free for personal and commercial use.
 Documentation & assets: Licensed under CC BY 4.0
 
 ## 💬 Why “lemOS”?
-Lemonatix: Personal username inspiration
+*Lem*onatix: Personal username inspiration
 
-Lemaître: Honoring the father of the Big Bang Theory
+*Lem*aître: Honoring the father of the Big Bang Theory
 
 lemOS: A playful OS with serious ambition
 
