@@ -42,9 +42,8 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
  - Optional science-themed wallpapers & Easter eggs 🍋🪐
 
 ## 📜 License
-Code: Licensed under the MIT License — free for personal and commercial use.
-
-Documentation & assets: Licensed under CC BY 4.0
+- Code: Licensed under the MIT License — free for personal and commercial use.
+- Documentation & assets: Licensed under CC BY 4.0
 
 ## 👨‍💻 Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
