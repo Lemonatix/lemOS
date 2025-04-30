@@ -28,17 +28,10 @@ lemOS/
 └── LICENSE           # Software license (GNU GPL 3.0)
 ```
 
-## 📜 License
-Code: Licensed under the MIT License — free for personal and commercial use.
-
-Documentation & assets: Licensed under CC BY 4.0
-
 ## 💬 Why “lemOS”?
-*Lem*onatix: Personal username inspiration
+The name is inspired of my username *Lem*onatix, as well as 
 
-*Lem*aître: Honoring the father of the Big Bang Theory
-
-lemOS: A playful OS with serious ambition
+*Lem*aître the father of the Big Bang Theory.
 
 ## 📈 Roadmap
  Minimal bootable system
@@ -52,6 +45,11 @@ lemOS: A playful OS with serious ambition
  Package manager (lemonpkg?)
 
  Optional physics-themed wallpapers & Easter eggs 🍋🪐
+
+## 📜 License
+Code: Licensed under the MIT License — free for personal and commercial use.
+
+Documentation & assets: Licensed under CC BY 4.0
 
 ## 👨‍💻 Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
