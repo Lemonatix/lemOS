@@ -6,7 +6,7 @@ Created originally by [Lemonatix](https://github.com/Lemonatix), lemOS blends pl
 > _"From Lemaître to Lemon — the Big Bang of your desktop experience."_
 
 ---
-$${\color{blue}Blue}$$
+$${\color{yellow}Blue}$$
 ## ✨ Features
 
 - ⚛️ Science-inspired design principles (clean, fundamental, extensible)
