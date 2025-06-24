@@ -49,5 +49,5 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
 ## 🧪 Disclaimer & Coming soon
-This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave).
-lemOS is in early development. Build and installation instructions will be published here when the first release is ready.
+This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
+lemOS is in very early development. Build and installation instructions will be published here when the first release is ready.
