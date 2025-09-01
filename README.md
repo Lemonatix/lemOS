@@ -7,16 +7,16 @@ Created originally by [Lemonatix](https://github.com/Lemonatix), lemOS blends pl
 
 ---
 
-## ✨ Features
+## Features
 
-- ⚛️ Science-inspired design principles (clean, fundamental, extensible)
-- 🍋 Lightweight and fast boot process
-- 🔧 Modular kernel architecture *(planned)*
-- 🖥️ Custom lemon-themed UI and branding
+- Science-inspired design principles (clean, fundamental, extensible)
+- Lightweight and fast boot process
+- Modular kernel architecture *(planned)*
+- Custom lemon-themed UI and branding
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```plaintext
 lemOS/
@@ -28,26 +28,26 @@ lemOS/
 └── LICENSE           # Software license (GNU GPL 3.0)
 ```
 
-## 💬 Why “lemOS”?
+## Why “lemOS”?
 The name is inspired of my username <code>Lem</code>onatix, as well as 
 
 <code>Lem</code>aître, henceforth honoring the father of the Big Bang Theory with the OS.
 
-## 📈 Roadmap
+## Roadmap
  - Minimal bootable system
  - Lemon shell (lemsh)
  - Filesystem and basic I/O
  - GUI prototype
  - Package manager (lemonpkg?)
- - Optional science-themed wallpapers & Easter eggs 🍋🪐
+ - Optional science-themed wallpapers & Easter eggs
 
-## 📜 License
+## License
 - Code: Licensed under the MIT License — free for personal and commercial use.
 - Documentation & assets: Licensed under CC BY 4.0
 
-## 👨‍💻 Contributing
+## Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
-## 🧪 Disclaimer & Coming soon
+## Disclaimer & Coming soon
 This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
 lemOS is in very early development. Build and installation instructions will be published here when the first release is ready.
