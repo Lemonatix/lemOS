@@ -1,50 +1,57 @@
-# scripts/Makefile
+# scripts/test.mk
+# Build + run kernel/test.asm
+#   MODE=elf  (default)  -> userspace ELF using Linux syscalls
+#   MODE=boot           -> 512-byte boot sector (real mode) in QEMU
 
-# ---- Paths (auto-detect repo root from scripts/) ----
+# --- repo layout (auto from this file's location) ---
 ROOT   := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
 KERNEL := $(ROOT)/kernel
 BUILD  := $(ROOT)/build
 
-# ---- Tools ----
+# --- tools ---
 ASM    := nasm
-LD     := gcc               # for ELF mode; can be 'ld' if you prefer
-QEMU   := qemu-system-x86_64
+LD     := ld
+QEMU32 := qemu-system-i386
 
-# ---- Config ----
-TEST_ASM := $(KERNEL)/test.asm
-MODE    ?= elf              # elf | boot
+# --- config ---
+MODE    ?= elf                    # elf | boot
+SRC_ASM := $(KERNEL)/test.asm
 
-# ---- Outputs ----
+# --- outputs ---
 ELF_OBJ := $(BUILD)/test.o
 ELF_BIN := $(BUILD)/test
 BOOTBIN := $(BUILD)/boot.bin
 
-.PHONY: all run run-elf run-boot clean dirs
-
+.PHONY: all run run-elf run-boot clean dirs help
 all: run
 
-run: run-$(MODE)
+help:
+	@echo 'Usage: make -f scripts/test.mk run [MODE=elf|boot]'
+	@echo '       make -f scripts/test.mk clean'
 
 dirs:
 	@mkdir -p $(BUILD)
 
-# ---------- ELF (userspace) ----------
-$(ELF_OBJ): $(TEST_ASM) | dirs
+# ===== ELF (userspace) =====
+$(ELF_OBJ): $(SRC_ASM) | dirs
 	$(ASM) -f elf64 -g -F dwarf -o $@ $<
 
 $(ELF_BIN): $(ELF_OBJ)
-	$(LD) -o $@ $^
+	$(LD) -o $@ $^ -nostdlib -e _start
 
 run-elf: $(ELF_BIN)
 	$<
 
-# ---------- Boot sector (bare metal) ----------
-$(BOOTBIN): $(TEST_ASM) | dirs
+# ===== Boot sector (bare metal) =====
+$(BOOTBIN): $(SRC_ASM) | dirs
 	$(ASM) -f bin -o $@ $<
 
 run-boot: $(BOOTBIN)
-	$(QEMU) -drive format=raw,file=$< -serial stdio
+	$(QEMU32) -drive format=raw,file=$< -serial stdio
 
-# ---------- Housekeeping ----------
+# ===== dispatcher =====
+run: run-$(MODE)
+
+# ===== cleanup =====
 clean:
 	rm -rf $(BUILD)
