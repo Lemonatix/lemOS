@@ -50,7 +50,7 @@ Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-the
 
 ## How to compile and run files
 ### Windows
-just add .exe for compile
+First line compiles the file, just replace "file" with the actual file
 ```c++
 g++ file.cpp -o file.exe
 /* run the file with */
@@ -59,18 +59,10 @@ file.exe
 
 ### Linux/MacOS
 
-1. Compile file with
+1. Compile file the same way as with windows
 ```c
 gcc file.c -o file
-```
-or for c++
-
-```cpp
-g++ file.cpp -o file
-```
-
-2. Run file by using
-```cpp
+/* run the file with*/
 ./file
 ```
 
