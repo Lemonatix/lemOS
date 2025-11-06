@@ -49,21 +49,14 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
 ## How to compile and run files
-### Windows
+
 First line compiles the file, just replace "file" with the actual file
 ```c++
 g++ file.cpp -o file.exe
 /* run the file with */
-file.exe
+./file.exe
 ```
 
-### Linux/MacOS
-Compile file the same way as with windows
-```c
-gcc file.c -o file
-/* run the file with */
-./file
-```
 
 ## Disclaimer & Coming soon
 This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
