@@ -65,7 +65,7 @@ g++ file.cpp -o file
 ```cpp
 ./file
 ```
-#### Windows
+### Windows
 just add .exe for compile
 ```c++
 g++ file.cpp -o file.exe
