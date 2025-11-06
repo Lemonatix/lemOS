@@ -52,7 +52,7 @@ Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-the
 
 Before compiling it is important to be in the right directory, for windows explicitly (with an example)
 ```bash
-cd C:\Users\"user"\myDirectory\lemOS\userland\    
+cd C:\Users\user\myDirectory\lemOS\userland\    
 ```
 to be sure that the file will be compile in the same folder as the code itself.
 
