@@ -50,13 +50,17 @@ Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-the
 
 ## How to compile and run files
 
-First line compiles the file, just replace "file" with the actual file
-```c++
-g++ file.cpp -o file.exe
-/* run the file with */
+Before compiling it is important to be in the right directory, for windows explicitly (with an example)
+```bash
+cd C:\Users\mikar\Documents\lemOS\userland\    
+```
+to be sure that the file will be compile in the same folder as the code itself.
+
+First line compiles the file, just replace "file" with the actual file, second line runs the file
+```c
+g++ file.c -o file.exe
 ./file.exe
 ```
-
 
 ## Disclaimer & Coming soon
 This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
