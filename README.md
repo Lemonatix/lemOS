@@ -48,6 +48,31 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 ## Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
+## How to compile and run files
+### Standard way for Linux/MacOS
+
+1. Compile file with
+```c
+gcc file.c -o file
+```
+or for c++
+
+```cpp
+g++ file.cpp -o file
+```
+
+2. Run file by using
+```cpp
+./file
+```
+#### Windows
+just add .exe for compile
+```c++
+g++ file.cpp -o file.exe
+/* run the file with */
+file.exe
+```
+
 ## Disclaimer & Coming soon
 This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
 lemOS is in very early development. Build and installation instructions will be published here when the first release is ready.
