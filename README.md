@@ -58,11 +58,10 @@ file.exe
 ```
 
 ### Linux/MacOS
-
-1. Compile file the same way as with windows
+Compile file the same way as with windows
 ```c
 gcc file.c -o file
-/* run the file with*/
+/* run the file with */
 ./file
 ```
 
