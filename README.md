@@ -49,7 +49,7 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
 ## How to compile and run files
-### Standard way for Linux/MacOS
+### Linux/MacOS
 
 1. Compile file with
 ```c
