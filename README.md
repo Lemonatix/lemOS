@@ -34,7 +34,9 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 <code>Lem</code>aître, henceforth honoring the father of the Big Bang Theory with the OS.
 
 ## Roadmap
- - Minimal bootable system -> first step boot process (bootloader)
+ - Minimal bootable system
+   -> first step boot process (bootloader), probably with assembly
+   -> as well as compiler
  - Lemon shell (lemsh)
  - Filesystem and basic I/O
  - GUI prototype
