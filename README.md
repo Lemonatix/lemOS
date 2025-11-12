@@ -35,8 +35,8 @@ The name is inspired of my username <code>Lem</code>onatix, as well as
 
 ## Roadmap
  - Minimal bootable system
-   -> first step boot process (bootloader), probably with assembly
-   -> as well as compiler
+   - first step boot process (bootloader), probably with assembly
+   - as well as compiler (in C after bootloader)
  - Lemon shell (lemsh)
  - Filesystem and basic I/O
  - GUI prototype
