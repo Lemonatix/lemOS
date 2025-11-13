@@ -29,7 +29,7 @@ lemOS/
 ```
 
 ## Why “lemOS”?
-The name is inspired of my username <code>Lem</code>onatix, as well as 
+The name is inspired by my username <code>Lem</code>onatix, as well as 
 
 <code>Lem</code>aître, henceforth honoring the father of the Big Bang Theory with the OS.
 
