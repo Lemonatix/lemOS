@@ -66,7 +66,7 @@ g++ file.c -o file.exe
 
 ## Compile and run with Linux / Mac via Make
 
-Make enables compile, run and clean very easily. In ```bash lemOS/ ``` you are able to run 
+Make enables compile, run and clean very easily. In ```bash lemOS/``` you are able to run 
 
 ```bash
 make build TARGET=userland/test
