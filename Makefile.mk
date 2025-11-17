@@ -1,5 +1,3 @@
-# lemOS/Makefile
-#
 # Usage examples (run from lemOS/):
 #   make build TARGET=userland/hello
 #   make run   TARGET=userland/hello
