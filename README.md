@@ -50,7 +50,7 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
 ## Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
-## How to compile and run files
+## How to compile and run files (for Windows)
 
 Before compiling it is important to be in the right directory, for windows explicitly (with an example)
 ```bash
