@@ -50,7 +50,7 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
 ## Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
-## How to compile and run files (for Windows)
+## How to compile and run files on Windows
 
 Before compiling it is important to be in the right directory, for windows explicitly (with an example)
 ```bash
@@ -63,6 +63,18 @@ First line compiles the file, just replace "file" with the actual file, second l
 g++ file.c -o file.exe
 ./file.exe
 ```
+
+## Compile and run with Linux / Mac via Make
+
+Make enables compile, run and clean very easily. In ```bash lemOS/ ``` you are able to run 
+
+```bash
+make build TARGET=userland/test
+make run   TARGET=userland/test
+make clean TARGET=userland/test
+```
+
+for specific files in folders (e.g. test.c in the userland folder) or just run the same commands without TARGET, to compile, run and clean everything regarding C files in lemOS.
 
 ## Disclaimer & Coming soon
 This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
