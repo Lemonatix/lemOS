@@ -1,15 +1,15 @@
 # Usage examples (run from lemOS/):
-#   make build TARGET=userland/hello
-#   make run   TARGET=userland/hello
-#   make clean TARGET=userland/hello
+#   make build TARGET=userland/test
+#   make run   TARGET=userland/test
+#   make clean TARGET=userland/test
 #
-# If TARGET is omitted, it defaults to userland/hello.
+# If TARGET is omitted, it defaults to userland/test.
 
 CC      = gcc
 CFLAGS  = -Wall -Wextra -std=c11 -O2
 
 # Default target if none is specified
-TARGET ?= userland/hello
+TARGET ?= userland/test
 
 SRC  := $(TARGET).c
 OBJ  := $(TARGET).o
