@@ -72,6 +72,7 @@ Make enables compile, run and clean very easily. In ```bash lemOS/``` you are ab
 make build TARGET=userland/test
 make run   TARGET=userland/test
 make clean TARGET=userland/test
+make run clean # runs and cleans all c files simultaneously
 ```
 
 for specific files in folders (e.g. test.c in the userland folder) or just run the same commands without TARGET, to compile, run and clean everything regarding C files in lemOS.
