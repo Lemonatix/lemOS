@@ -35,8 +35,9 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
 
 ## Roadmap
  - Minimal bootable system
-   - first step boot process (bootloader), probably with assembly
-   - as well as compiler (in C after bootloader)
+   - [x] boot via Limine into a Rust kernel and print text
+   - [ ] interrupts, timer and keyboard
+   - [ ] memory management (paging, heap)
  - Lemon shell (lemsh)
  - Filesystem and basic I/O
  - GUI prototype
@@ -50,32 +51,44 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
 ## Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
 
-## How to compile and run files on Windows
+## Building and running
 
-Before compiling it is important to be in the right directory, for windows explicitly (with an example)
-```bash
-cd C:\Users\user\myDirectory\lemOS\userland\    
-```
-to be sure that the file will be compile in the same folder as the code itself.
+lemOS is written in Rust and boots with the [Limine](https://github.com/limine-bootloader/limine) bootloader. You can try it in the QEMU emulator without touching your real computer.
 
-First line compiles the file, just replace "file" with the actual file, second line runs the file
-```c
-g++ file.c -o file.exe
-./file.exe
-```
+### What you need
 
-## Compile and run with Linux / Mac via Make
+- [Rust](https://rustup.rs) via `rustup`. The right nightly toolchain installs itself the first time you build, because of `kernel/rust-toolchain.toml`.
+- QEMU, xorriso, git, make and a C compiler:
+  - Ubuntu/Debian: `sudo apt install qemu-system-x86 xorriso git make gcc`
+  - macOS (Homebrew): `brew install qemu xorriso`
+  - Windows: use [WSL](https://learn.microsoft.com/windows/wsl/install) with Ubuntu and follow the Ubuntu line.
 
-Make enables compile, run and clean very easily. In ```bash lemOS/``` you are able to run 
+### Commands
+
+Run these from the `lemOS/` folder:
 
 ```bash
-make build TARGET=userland/test
-make run   TARGET=userland/test
-make clean TARGET=userland/test
-make run clean # runs and cleans all c files simultaneously
+make          # build the kernel and the bootable image build/lemos.iso
+make run      # start lemOS in QEMU (window plus serial output in your terminal)
+make run-nox  # start lemOS without a window, serial output only
+make test     # boot without a window and check that lemOS reports "boot ok"
+make clean    # remove all build output
 ```
 
-for specific files in folders (e.g. test.c in the userland folder) or just run the same commands without TARGET, to compile, run and clean everything regarding C files in lemOS.
+The first build downloads Limine into `build/limine`.
+
+### Project layout
+
+```plaintext
+kernel/
+├── src/main.rs      # entry point (kmain), Limine requests, kprintln!, panic handler
+├── src/console.rs   # text output on the framebuffer
+├── src/serial.rs    # serial port COM1 (output shows up in the terminal)
+├── linker.ld        # places the kernel in the higher half
+└── rust-toolchain.toml
+boot/limine.conf     # bootloader menu
+Makefile             # build, ISO, QEMU
+```
 
 ## Disclaimer & Coming soon
 This is a hobbyist project and is not yet stable. Not recommended for production use (unless you're very brave), since
