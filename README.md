@@ -25,7 +25,8 @@ lemOS/
 ├── docs/             # Documentation (licensed under CC BY 4.0)
 ├── assets/           # Icons, wallpapers, and logo
 ├── scripts/          # Build tools and install scripts
-└── LICENSE           # Software license (GNU GPL 3.0)
+├── LICENSE           # Software license (GNU GPL 3.0)
+└── LICENSE-DOCS      # Documentation & assets license (CC BY 4.0)
 ```
 
 ## Why “lemOS”?
@@ -44,8 +45,8 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
  - Optional science-themed wallpapers & Easter eggs
 
 ## License
-- Code: Licensed under the MIT License — free for personal and commercial use.
-- Documentation & assets: Licensed under CC BY 4.0
+- Code: Licensed under the GNU General Public License v3.0 (see [LICENSE](LICENSE)).
+- Documentation & assets: Licensed under CC BY 4.0 (see [LICENSE-DOCS](LICENSE-DOCS)).
 
 ## Contributing
 Pull requests are welcome! If you'd like to contribute code, ideas, or lemon-themed assets, please open an issue or fork the project.
