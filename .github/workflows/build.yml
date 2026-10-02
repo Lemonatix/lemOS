@@ -1,0 +1,36 @@
+name: Build und Boot-Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: QEMU und xorriso installieren
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 xorriso
+
+      # rustup liest kernel/rust-toolchain.toml und installiert nightly automatisch.
+      - name: Rust-Toolchain installieren
+        run: cd kernel && rustup show
+
+      - name: Kernel und ISO bauen
+        run: make
+
+      - name: In QEMU booten
+        run: make test
+
+      - name: ISO hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: lemos-iso
+          path: build/lemos.iso
