@@ -19,15 +19,22 @@ QEMU_FLAGS := -M q35 -m 256M -cdrom $(ISO) -no-reboot
 
 CARGO_FLAGS := $(if $(filter release,$(PROFILE)),--release,)
 
+INSTALL_HINT := Installieren unter Ubuntu/Debian/WSL: sudo apt install qemu-system-x86 xorriso git make gcc, unter macOS: brew install qemu xorriso
+# Bricht mit einer klaren Meldung ab, wenn ein benötigtes Programm fehlt.
+need = @command -v $(1) >/dev/null 2>&1 || { echo "Fehler: '$(1)' wurde nicht gefunden. $(2)"; exit 1; }
+
 .PHONY: all kernel iso run run-nox test clean FORCE
 
 all: iso
 
 kernel:
+	$(call need,cargo,Rust installieren: https://rustup.rs)
 	cd kernel && cargo build $(CARGO_FLAGS)
 
 # Limine wird beim ersten Build als fertige Binärversion heruntergeladen.
 $(LIMINE)/limine:
+	$(call need,git,$(INSTALL_HINT))
+	$(call need,cc,$(INSTALL_HINT))
 	rm -rf $(LIMINE)
 	git clone https://github.com/limine-bootloader/limine.git --branch=$(LIMINE_BRANCH) --depth=1 $(LIMINE)
 	$(MAKE) -C $(LIMINE)
@@ -35,6 +42,7 @@ $(LIMINE)/limine:
 iso: $(ISO)
 
 $(ISO): kernel $(LIMINE)/limine boot/limine.conf
+	$(call need,xorriso,$(INSTALL_HINT))
 	rm -rf $(BUILD)/iso_root
 	mkdir -p $(BUILD)/iso_root/boot/limine $(BUILD)/iso_root/EFI/BOOT
 	cp $(KERNEL) $(BUILD)/iso_root/boot/lemos-kernel
@@ -49,13 +57,16 @@ $(ISO): kernel $(LIMINE)/limine boot/limine.conf
 	$(LIMINE)/limine bios-install $@ 2>/dev/null
 
 run: iso
+	$(call need,$(QEMU),$(INSTALL_HINT))
 	$(QEMU) $(QEMU_FLAGS) -serial stdio
 
 run-nox: iso
+	$(call need,$(QEMU),$(INSTALL_HINT))
 	$(QEMU) $(QEMU_FLAGS) -display none -serial stdio
 
 # Bootet lemOS ohne Bildschirm und wartet bis zu 30 Sekunden auf die Erfolgsmeldung.
 test: iso
+	$(call need,$(QEMU),$(INSTALL_HINT))
 	rm -f $(BUILD)/serial.log
 	@$(QEMU) $(QEMU_FLAGS) -display none -serial file:$(BUILD)/serial.log & qemu=$$!; \
 	for i in $$(seq 30); do \
