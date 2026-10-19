@@ -1,0 +1,22 @@
+[package]
+name = "lemos-kernel"
+version = "0.1.0"
+edition = "2024"
+description = "Der Kernel von lemOS"
+license = "GPL-3.0-or-later"
+
+[[bin]]
+name = "lemos-kernel"
+test = false
+bench = false
+
+[dependencies]
+font8x8 = { version = "0.3.1", default-features = false, features = ["unicode"] }
+limine = "0.6.5"
+spin = { version = "0.12", default-features = false, features = ["spin_mutex"] }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
