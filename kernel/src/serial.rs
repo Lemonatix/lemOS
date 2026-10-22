@@ -51,10 +51,19 @@ impl Serial {
 impl fmt::Write for Serial {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         for byte in s.bytes() {
-            if byte == b'\n' {
-                Self::write_byte(b'\r');
+            match byte {
+                b'\n' => {
+                    Self::write_byte(b'\r');
+                    Self::write_byte(b'\n');
+                }
+                // Rückschritt: Cursor zurück, Zeichen mit Leerzeichen überschreiben.
+                0x08 => {
+                    for b in [0x08, b' ', 0x08] {
+                        Self::write_byte(b);
+                    }
+                }
+                _ => Self::write_byte(byte),
             }
-            Self::write_byte(byte);
         }
         Ok(())
     }

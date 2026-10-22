@@ -6,14 +6,18 @@
 
 #![no_std]
 #![no_main]
+#![feature(abi_x86_interrupt)]
 
 mod console;
+mod gdt;
+mod interrupts;
+mod memory;
 mod serial;
 
 use core::fmt::{self, Write};
 use core::panic::PanicInfo;
 
-use limine::request::FramebufferRequest;
+use limine::request::{FramebufferRequest, HhdmRequest, MemmapRequest};
 use limine::{BaseRevision, RequestsEndMarker, RequestsStartMarker};
 use spin::Mutex;
 
@@ -37,6 +41,14 @@ static BASE_REVISION: BaseRevision = BaseRevision::new();
 static FRAMEBUFFER: FramebufferRequest = FramebufferRequest::new();
 
 #[used]
+#[unsafe(link_section = ".limine_requests")]
+static HHDM: HhdmRequest = HhdmRequest::new();
+
+#[used]
+#[unsafe(link_section = ".limine_requests")]
+static MEMMAP: MemmapRequest = MemmapRequest::new();
+
+#[used]
 #[unsafe(link_section = ".limine_requests_end")]
 static REQUESTS_END: RequestsEndMarker = RequestsEndMarker::new();
 
@@ -46,10 +58,14 @@ static CONSOLE: Mutex<Option<Console>> = Mutex::new(None);
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
-    let _ = Serial.write_fmt(args);
-    if let Some(console) = CONSOLE.lock().as_mut() {
-        let _ = console.write_fmt(args);
-    }
+    // Ohne Interrupts, damit uns kein Interrupt-Handler unterbricht, der
+    // selbst etwas ausgeben will und dann ewig auf den Lock warten würde.
+    x86_64::instructions::interrupts::without_interrupts(|| {
+        let _ = Serial.write_fmt(args);
+        if let Some(console) = CONSOLE.lock().as_mut() {
+            let _ = console.write_fmt(args);
+        }
+    });
 }
 
 /// Schreibt auf den Bildschirm und die serielle Schnittstelle.
@@ -85,10 +101,35 @@ extern "C" fn kmain() -> ! {
 
     kprintln!("Willkommen bei lemOS {}!", env!("CARGO_PKG_VERSION"));
     kprintln!("Vom Urknall zur Zitrone: der Kernel laeuft.");
+
+    let (Some(hhdm), Some(memmap)) = (HHDM.response(), MEMMAP.response()) else {
+        kprintln!("Fehler: Limine hat keine Speicherinformationen geliefert.");
+        halt();
+    };
+    memory::init(hhdm.offset, memmap.entries());
+
+    gdt::init();
+    interrupts::init();
+    kprintln!("GDT und IDT geladen.");
+
+    // Testet die Ausnahmebehandlung: der Handler meldet sich und kehrt zurück.
+    x86_64::instructions::interrupts::int3();
+
+    x86_64::instructions::interrupts::enable();
+    // Eine Zehntelsekunde warten, um zu sehen, dass der Timer tickt.
+    while interrupts::ticks() < u64::from(interrupts::TIMER_HZ / 10) {
+        x86_64::instructions::hlt();
+    }
+    kprintln!("Timer laeuft mit {} Hz.", interrupts::TIMER_HZ);
+
     // Die CI sucht nach dieser Zeile, um zu pruefen, dass das System bootet.
     kprintln!("lemOS: boot ok");
+    kprint!("Tippe etwas: ");
 
-    halt();
+    // Ab jetzt passiert alles in den Interrupt-Handlern.
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
 /// Hält die CPU an, bis ein Interrupt kommt – für immer.
