@@ -11,7 +11,7 @@ const SCALE: usize = 2;
 const GLYPH: usize = 8 * SCALE;
 
 /// Zitronengelb auf dunklem Hintergrund.
-const FOREGROUND: u32 = 0x00FF_E14D;
+pub const FOREGROUND: u32 = 0x00FF_E14D;
 const BACKGROUND: u32 = 0x0010_1418;
 
 pub struct Console {
@@ -22,6 +22,8 @@ pub struct Console {
     stride: usize,
     column: usize,
     row: usize,
+    /// Aktuelle Schriftfarbe.
+    color: u32,
 }
 
 // Der Framebuffer gehört allein dem Kernel; der Zugriff läuft über einen Mutex.
@@ -40,6 +42,7 @@ impl Console {
             stride: fb.pitch as usize / 4,
             column: 0,
             row: 0,
+            color: FOREGROUND,
         };
         console.clear();
         Some(console)
@@ -51,6 +54,11 @@ impl Console {
 
     fn rows(&self) -> usize {
         self.height / GLYPH
+    }
+
+    /// Setzt die Schriftfarbe für alle folgenden Zeichen (0xRRGGBB).
+    pub fn set_color(&mut self, color: u32) {
+        self.color = color;
     }
 
     fn put_pixel(&mut self, x: usize, y: usize, color: u32) {
@@ -77,7 +85,7 @@ impl Console {
         for (gy, bits) in glyph.iter().enumerate() {
             for gx in 0..8 {
                 let color = if bits & (1 << gx) != 0 {
-                    FOREGROUND
+                    self.color
                 } else {
                     BACKGROUND
                 };
@@ -94,17 +102,39 @@ impl Console {
         self.column = 0;
         self.row += 1;
         if self.row >= self.rows() {
-            // Noch kein Scrollen: wir fangen oben wieder an.
-            self.clear();
+            self.scroll();
+            self.row -= 1;
         }
     }
 
-    /// Löscht das Zeichen links vom Cursor (nur innerhalb der Zeile).
+    /// Schiebt den ganzen Text um eine Zeile nach oben.
+    fn scroll(&mut self) {
+        let text_height = self.rows() * GLYPH;
+        unsafe {
+            core::ptr::copy(
+                self.buffer.add(GLYPH * self.stride),
+                self.buffer,
+                (text_height - GLYPH) * self.stride,
+            );
+        }
+        for y in text_height - GLYPH..text_height {
+            for x in 0..self.width {
+                self.put_pixel(x, y, BACKGROUND);
+            }
+        }
+    }
+
+    /// Löscht das Zeichen links vom Cursor, notfalls am Ende der Zeile davor.
     fn backspace(&mut self) {
         if self.column > 0 {
             self.column -= 1;
-            self.draw_glyph(' ');
+        } else if self.row > 0 {
+            self.row -= 1;
+            self.column = self.columns() - 1;
+        } else {
+            return;
         }
+        self.draw_glyph(' ');
     }
 
     fn write_char(&mut self, c: char) {
