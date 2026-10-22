@@ -8,11 +8,16 @@
 #![no_main]
 #![feature(abi_x86_interrupt)]
 
+extern crate alloc;
+
+mod allocator;
 mod console;
 mod gdt;
 mod interrupts;
+mod logo;
 mod memory;
 mod serial;
+mod shell;
 
 use core::fmt::{self, Write};
 use core::panic::PanicInfo;
@@ -68,6 +73,24 @@ pub fn _print(args: fmt::Arguments) {
     });
 }
 
+/// Setzt die Schriftfarbe auf dem Bildschirm (0xRRGGBB).
+pub fn set_color(color: u32) {
+    x86_64::instructions::interrupts::without_interrupts(|| {
+        if let Some(console) = CONSOLE.lock().as_mut() {
+            console.set_color(color);
+        }
+    });
+}
+
+/// Löscht den Bildschirm.
+pub fn clear_screen() {
+    x86_64::instructions::interrupts::without_interrupts(|| {
+        if let Some(console) = CONSOLE.lock().as_mut() {
+            console.clear();
+        }
+    });
+}
+
 /// Schreibt auf den Bildschirm und die serielle Schnittstelle.
 #[macro_export]
 macro_rules! kprint {
@@ -99,6 +122,7 @@ extern "C" fn kmain() -> ! {
         *CONSOLE.lock() = Console::new(fb);
     }
 
+    logo::show();
     kprintln!("Willkommen bei lemOS {}!", env!("CARGO_PKG_VERSION"));
     kprintln!("Vom Urknall zur Zitrone: der Kernel laeuft.");
 
@@ -107,6 +131,8 @@ extern "C" fn kmain() -> ! {
         halt();
     };
     memory::init(hhdm.offset, memmap.entries());
+    allocator::init();
+    kprintln!("Heap mit {} KiB bereit.", allocator::HEAP_SIZE / 1024);
 
     gdt::init();
     interrupts::init();
@@ -124,12 +150,8 @@ extern "C" fn kmain() -> ! {
 
     // Die CI sucht nach dieser Zeile, um zu pruefen, dass das System bootet.
     kprintln!("lemOS: boot ok");
-    kprint!("Tippe etwas: ");
 
-    // Ab jetzt passiert alles in den Interrupt-Handlern.
-    loop {
-        x86_64::instructions::hlt();
-    }
+    shell::run()
 }
 
 /// Hält die CPU an, bis ein Interrupt kommt – für immer.

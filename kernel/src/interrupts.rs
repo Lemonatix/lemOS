@@ -15,7 +15,7 @@ use x86_64::registers::control::Cr2;
 use x86_64::registers::model_specific::Msr;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 
-use crate::{gdt, kprint, kprintln, memory};
+use crate::{gdt, kprintln, memory};
 
 /// Die beiden PICs werden hinter die 32 CPU-Ausnahmen verschoben.
 const PIC_1_OFFSET: u8 = 32;
@@ -173,6 +173,56 @@ static KEYBOARD: Mutex<PS2Keyboard<layouts::De105Key, ScancodeSet1>> =
         HandleControl::Ignore,
     ));
 
+/// Tastendrücke, die noch niemand abgeholt hat. Ein Ringpuffer mit fester
+/// Größe, denn im Interrupt-Handler dürfen wir keinen Heap benutzen.
+struct KeyBuffer {
+    keys: [char; 64],
+    start: usize,
+    len: usize,
+}
+
+impl KeyBuffer {
+    fn push(&mut self, c: char) {
+        // Ist der Puffer voll, geht der Tastendruck verloren.
+        if self.len < self.keys.len() {
+            self.keys[(self.start + self.len) % self.keys.len()] = c;
+            self.len += 1;
+        }
+    }
+
+    fn pop(&mut self) -> Option<char> {
+        if self.len == 0 {
+            return None;
+        }
+        let c = self.keys[self.start];
+        self.start = (self.start + 1) % self.keys.len();
+        self.len -= 1;
+        Some(c)
+    }
+}
+
+static KEYS: Mutex<KeyBuffer> = Mutex::new(KeyBuffer {
+    keys: ['\0'; 64],
+    start: 0,
+    len: 0,
+});
+
+/// Wartet auf den nächsten Tastendruck und gibt ihn zurück.
+pub fn read_key() -> char {
+    use x86_64::instructions::interrupts;
+    loop {
+        // Interrupts kurz aus, damit zwischen Nachsehen und Schlafen keine
+        // Taste durchrutscht. `enable_and_hlt` schaltet sie in einem Schritt
+        // wieder ein und schläft bis zum nächsten Interrupt.
+        interrupts::disable();
+        if let Some(c) = KEYS.lock().pop() {
+            interrupts::enable();
+            return c;
+        }
+        interrupts::enable_and_hlt();
+    }
+}
+
 extern "x86-interrupt" fn keyboard(_frame: InterruptStackFrame) {
     // Der Scancode muss gelesen werden, sonst schickt der Controller nichts mehr.
     let scancode: u8 = unsafe { Port::new(0x60).read() };
@@ -180,7 +230,7 @@ extern "x86-interrupt" fn keyboard(_frame: InterruptStackFrame) {
     if let Ok(Some(event)) = keyboard.add_byte(scancode)
         && let Some(DecodedKey::Unicode(c)) = keyboard.process_keyevent(event)
     {
-        kprint!("{c}");
+        KEYS.lock().push(c);
     }
     end_of_interrupt(Irq::Keyboard);
 }

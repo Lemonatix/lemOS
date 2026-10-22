@@ -4,7 +4,8 @@
 //! oben im Adressraum, und über die Higher-Half Direct Map (HHDM) ist der
 //! physische Arbeitsspeicher ab `hhdm_offset` eingeblendet. Geräte-Register
 //! wie die des Local APIC sind dort aber nicht dabei, die blenden wir mit
-//! [`map_mmio`] selbst ein.
+//! [`map_mmio`] selbst ein. Für den Heap holt [`map_memory`] freie Seiten aus
+//! der Speicherkarte und blendet sie an einer beliebigen Adresse ein.
 
 use limine::memmap::{Entry, MEMMAP_USABLE};
 use spin::Mutex;
@@ -57,6 +58,31 @@ pub fn map_mmio(physical: u64) -> *mut u8 {
             .flush();
     }
     (virt + (physical - frame.start_address().as_u64())).as_mut_ptr()
+}
+
+/// Blendet ab `start` neuen, beschreibbaren Arbeitsspeicher der Größe `size`
+/// ein. Jede Seite bekommt eine freie physische Seite aus der Speicherkarte.
+pub fn map_memory(start: VirtAddr, size: u64) {
+    let mut guard = MEMORY.lock();
+    let memory = guard.as_mut().expect("memory::init wurde nicht aufgerufen");
+    let pages = Page::<Size4KiB>::range_inclusive(
+        Page::containing_address(start),
+        Page::containing_address(start + (size - 1)),
+    );
+    let flags = PageTableFlags::PRESENT | PageTableFlags::WRITABLE | PageTableFlags::NO_EXECUTE;
+    for page in pages {
+        let frame = memory
+            .frames
+            .allocate_frame()
+            .expect("Kein freier Arbeitsspeicher mehr");
+        unsafe {
+            memory
+                .page_table
+                .map_to(page, frame, flags, &mut memory.frames)
+                .expect("Seite konnte nicht eingeblendet werden")
+                .flush();
+        }
+    }
 }
 
 /// Verteilt freie Speicherseiten aus der Speicherkarte von Limine, eine nach

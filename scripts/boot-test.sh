@@ -1,7 +1,9 @@
 #!/bin/sh
 # Bootet lemOS ohne Bildschirm in QEMU und prüft:
 #   1. dass der Kernel startet und der Timer tickt ("lemOS: boot ok"),
-#   2. dass Tastendrücke ankommen und auf dem Bildschirm erscheinen.
+#   2. dass die Shell Tastendrücke annimmt und "echo" ausführt,
+#   3. dass "reboot" den Rechner neu startet (QEMU beendet sich dann wegen
+#      -no-reboot von selbst).
 #
 # Aufruf: scripts/boot-test.sh <qemu> <qemu-optionen...>
 # (wird von "make test" aufgerufen)
@@ -39,10 +41,23 @@ wait_for() {
 
 wait_for "lemOS: boot ok" || finish "Boot-Test fehlgeschlagen: Kernel startet nicht." 1
 
-for key in h a l l o; do
-    echo "sendkey $key" >&3
-    sleep 0.2
+# Tippt die Tasten $@ (Namen wie beim QEMU-Befehl sendkey).
+type_keys() {
+    for key in "$@"; do
+        echo "sendkey $key" >&3
+        sleep 0.2
+    done
+}
+
+wait_for "lemsh> " || finish "Boot-Test fehlgeschlagen: Shell startet nicht." 1
+type_keys e c h o spc h a l l o ret
+wait_for "^hallo" || finish "Boot-Test fehlgeschlagen: Tastatur oder echo funktioniert nicht." 1
+
+type_keys r e b o o t ret
+for _ in $(seq 10); do
+    kill -0 "$qemu" 2>/dev/null || break
+    sleep 1
 done
-wait_for "Tippe etwas: hallo" || finish "Boot-Test fehlgeschlagen: Tastatur reagiert nicht." 1
+kill -0 "$qemu" 2>/dev/null && finish "Boot-Test fehlgeschlagen: reboot startet nicht neu." 1
 
 finish "Boot-Test bestanden." 0
