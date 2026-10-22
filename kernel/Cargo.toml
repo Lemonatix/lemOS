@@ -13,7 +13,10 @@ bench = false
 [dependencies]
 font8x8 = { version = "0.3.1", default-features = false, features = ["unicode"] }
 limine = "0.6.5"
-spin = { version = "0.12", default-features = false, features = ["spin_mutex"] }
+pc-keyboard = "0.9.0"
+pic8259 = "0.11.0"
+spin = { version = "0.12", default-features = false, features = ["spin_mutex", "lazy"] }
+x86_64 = "0.15.5"
 
 [profile.dev]
 panic = "abort"

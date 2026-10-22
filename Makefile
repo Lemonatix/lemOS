@@ -3,7 +3,7 @@
 #   make          baut den Kernel und das bootfähige Image (build/lemos.iso)
 #   make run      startet lemOS in QEMU (Fenster + serielle Ausgabe im Terminal)
 #   make run-nox  startet lemOS ohne Fenster, nur mit serieller Ausgabe
-#   make test     bootet headless und prüft, dass "lemOS: boot ok" erscheint
+#   make test     bootet headless und prüft Start, Timer und Tastatur
 #   make clean    räumt build/ und kernel/target/ auf
 
 PROFILE ?= release
@@ -64,17 +64,10 @@ run-nox: iso
 	$(call need,$(QEMU),$(INSTALL_HINT))
 	$(QEMU) $(QEMU_FLAGS) -display none -serial stdio
 
-# Bootet lemOS ohne Bildschirm und wartet bis zu 30 Sekunden auf die Erfolgsmeldung.
+# Bootet lemOS ohne Bildschirm und prüft Start, Timer und Tastatur.
 test: iso
 	$(call need,$(QEMU),$(INSTALL_HINT))
-	rm -f $(BUILD)/serial.log
-	@$(QEMU) $(QEMU_FLAGS) -display none -serial file:$(BUILD)/serial.log & qemu=$$!; \
-	for i in $$(seq 30); do \
-		if grep -q "lemOS: boot ok" $(BUILD)/serial.log 2>/dev/null; then \
-			kill $$qemu; cat $(BUILD)/serial.log; echo "Boot-Test bestanden."; exit 0; \
-		fi; sleep 1; \
-	done; \
-	kill $$qemu 2>/dev/null; cat $(BUILD)/serial.log 2>/dev/null; echo "Boot-Test fehlgeschlagen."; exit 1
+	@scripts/boot-test.sh $(QEMU) $(QEMU_FLAGS)
 
 clean:
 	rm -rf $(BUILD)

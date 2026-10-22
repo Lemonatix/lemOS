@@ -37,8 +37,8 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
 ## Roadmap
  - Minimal bootable system
    - [x] boot via Limine into a Rust kernel and print text
-   - [ ] interrupts, timer and keyboard
-   - [ ] memory management (paging, heap)
+   - [x] interrupts, timer and keyboard (German layout)
+   - [ ] memory management (heap)
  - Lemon shell (lemsh)
  - Filesystem and basic I/O
  - GUI prototype
@@ -72,7 +72,7 @@ Run these from the `lemOS/` folder:
 make          # build the kernel and the bootable image build/lemos.iso
 make run      # start lemOS in QEMU (window plus serial output in your terminal)
 make run-nox  # start lemOS without a window, serial output only
-make test     # boot without a window and check that lemOS reports "boot ok"
+make test     # boot without a window, check boot, timer and keyboard input
 make clean    # remove all build output
 ```
 
@@ -82,13 +82,17 @@ The first build downloads Limine into `build/limine`.
 
 ```plaintext
 kernel/
-├── src/main.rs      # entry point (kmain), Limine requests, kprintln!, panic handler
-├── src/console.rs   # text output on the framebuffer
-├── src/serial.rs    # serial port COM1 (output shows up in the terminal)
-├── linker.ld        # places the kernel in the higher half
+├── src/main.rs       # entry point (kmain), Limine requests, kprintln!, panic handler
+├── src/console.rs    # text output on the framebuffer
+├── src/serial.rs     # serial port COM1 (output shows up in the terminal)
+├── src/gdt.rs        # GDT and TSS (separate stack for double faults)
+├── src/interrupts.rs # IDT, CPU exceptions, PIC, timer (PIT) and PS/2 keyboard
+├── src/memory.rs     # page tables and physical frames from the Limine memory map
+├── linker.ld         # places the kernel in the higher half
 └── rust-toolchain.toml
 boot/limine.conf     # bootloader menu
 Makefile             # build, ISO, QEMU
+scripts/boot-test.sh # headless boot test used by make test and CI
 ```
 
 ## Disclaimer & Coming soon

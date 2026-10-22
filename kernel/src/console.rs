@@ -70,6 +70,7 @@ impl Console {
     fn draw_glyph(&mut self, c: char) {
         let glyph = font8x8::BASIC_FONTS
             .get(c)
+            .or_else(|| font8x8::LATIN_FONTS.get(c))
             .or_else(|| font8x8::BASIC_FONTS.get('?'))
             .unwrap();
         let (x0, y0) = (self.column * GLYPH, self.row * GLYPH);
@@ -98,10 +99,19 @@ impl Console {
         }
     }
 
+    /// Löscht das Zeichen links vom Cursor (nur innerhalb der Zeile).
+    fn backspace(&mut self) {
+        if self.column > 0 {
+            self.column -= 1;
+            self.draw_glyph(' ');
+        }
+    }
+
     fn write_char(&mut self, c: char) {
         match c {
             '\n' => self.new_line(),
             '\r' => self.column = 0,
+            '\u{8}' => self.backspace(),
             c => {
                 if self.column >= self.columns() {
                     self.new_line();
