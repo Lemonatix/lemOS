@@ -123,8 +123,8 @@ extern "C" fn kmain() -> ! {
     }
 
     logo::show();
-    kprintln!("Willkommen bei lemOS {}!", env!("CARGO_PKG_VERSION"));
-    kprintln!("Vom Urknall zur Zitrone: der Kernel laeuft.");
+    kprintln!("Welcome to lemOS {}!", env!("CARGO_PKG_VERSION"));
+    kprintln!("From Lemaître to Lemon: the kernel is running.");
 
     let (Some(hhdm), Some(memmap)) = (HHDM.response(), MEMMAP.response()) else {
         kprintln!("Fehler: Limine hat keine Speicherinformationen geliefert.");
@@ -132,11 +132,11 @@ extern "C" fn kmain() -> ! {
     };
     memory::init(hhdm.offset, memmap.entries());
     allocator::init();
-    kprintln!("Heap mit {} KiB bereit.", allocator::HEAP_SIZE / 1024);
+    kprintln!("Heap with {} KiB is ready.", allocator::HEAP_SIZE / 1024);
 
     gdt::init();
     interrupts::init();
-    kprintln!("GDT und IDT geladen.");
+    kprintln!("GDT and IDT loaded.");
 
     // Testet die Ausnahmebehandlung: der Handler meldet sich und kehrt zurück.
     x86_64::instructions::interrupts::int3();
@@ -146,7 +146,7 @@ extern "C" fn kmain() -> ! {
     while interrupts::ticks() < u64::from(interrupts::TIMER_HZ / 10) {
         x86_64::instructions::hlt();
     }
-    kprintln!("Timer laeuft mit {} Hz.", interrupts::TIMER_HZ);
+    kprintln!("Timer running with {} Hz.", interrupts::TIMER_HZ);
 
     // Die CI sucht nach dieser Zeile, um zu pruefen, dass das System bootet.
     kprintln!("lemOS: boot ok");

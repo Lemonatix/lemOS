@@ -128,31 +128,31 @@ fn end_of_interrupt(irq: Irq) {
 extern "x86-interrupt" fn breakpoint(frame: InterruptStackFrame) {
     // Ein Breakpoint ist harmlos: melden und einfach weitermachen.
     kprintln!(
-        "Ausnahme: Breakpoint bei {:#x}",
+        "Exception: breakpoint at {:#x}",
         frame.instruction_pointer.as_u64()
     );
 }
 
 extern "x86-interrupt" fn divide_error(frame: InterruptStackFrame) {
-    panic!("Ausnahme: Division durch Null\n{frame:#?}");
+    panic!("Exception: dividing zero\n{frame:#?}");
 }
 
 extern "x86-interrupt" fn invalid_opcode(frame: InterruptStackFrame) {
-    panic!("Ausnahme: Ungueltiger Befehl\n{frame:#?}");
+    panic!("Exception: invalid command\n{frame:#?}");
 }
 
 extern "x86-interrupt" fn general_protection_fault(frame: InterruptStackFrame, code: u64) {
-    panic!("Ausnahme: General Protection Fault (Code {code:#x})\n{frame:#?}");
+    panic!("Exception: general protection fault (Code {code:#x})\n{frame:#?}");
 }
 
 extern "x86-interrupt" fn page_fault(frame: InterruptStackFrame, code: PageFaultErrorCode) {
     // CR2 enthält die Adresse, auf die zugegriffen werden sollte.
     let address = Cr2::read_raw();
-    panic!("Ausnahme: Page Fault bei Adresse {address:#x} ({code:?})\n{frame:#?}");
+    panic!("Exception: page fault at adress {address:#x} ({code:?})\n{frame:#?}");
 }
 
 extern "x86-interrupt" fn double_fault(frame: InterruptStackFrame, _code: u64) -> ! {
-    panic!("Ausnahme: Double Fault\n{frame:#?}");
+    panic!("Exception: double fault\n{frame:#?}");
 }
 
 // --- Hardware-Interrupts --------------------------------------------------------

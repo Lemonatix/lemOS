@@ -23,29 +23,29 @@ struct Command {
 const COMMANDS: &[Command] = &[
     Command {
         name: "help",
-        help: "zeigt diese Hilfe",
+        help: "shows you this help, alongside all the commands",
         run: help,
     },
     Command {
         name: "clear",
-        help: "leert den Bildschirm",
+        help: "clears the terminal screen",
         run: clear,
     },
     Command {
         name: "echo",
-        help: "gibt den Text dahinter aus",
+        help: "prints the text after the echo",
         run: echo,
     },
     Command {
         name: "reboot",
-        help: "startet den Rechner neu",
+        help: "restarts the computer (right now it closes the terminal)",
         run: reboot,
     },
 ];
 
 /// Startet die Shell. Sie läuft, bis der Rechner ausgeht.
 pub fn run() -> ! {
-    kprintln!("\nlemsh bereit. Tippe 'help' fuer alle Befehle.");
+    kprintln!("\nlemsh ready. Type 'help' for all commands.");
     let mut line = String::new();
     loop {
         kprint!("{PROMPT}");
@@ -86,14 +86,14 @@ fn execute(line: &str) {
     let (name, args) = line.split_once(' ').unwrap_or((line, ""));
     match COMMANDS.iter().find(|command| command.name == name) {
         Some(command) => (command.run)(args.trim_start()),
-        None => kprintln!("Unbekannter Befehl: {name}. Tippe 'help' fuer alle Befehle."),
+        None => kprintln!("Unknown command: {name}. Type 'help' to see all available commands."),
     }
 }
 
 // --- Befehle --------------------------------------------------------------------
 
 fn help(_args: &str) {
-    kprintln!("Befehle:");
+    kprintln!("Commands:");
     for command in COMMANDS {
         kprintln!("  {:<8}{}", command.name, command.help);
     }
@@ -108,7 +108,7 @@ fn echo(args: &str) {
 }
 
 fn reboot(_args: &str) {
-    kprintln!("Starte neu ...");
+    kprintln!("Restarting ...");
     unsafe {
         // Der Tastatur-Controller kann die CPU zurücksetzen: erst warten, bis
         // er bereit ist, dann den Befehl 0xFE ("Reset-Leitung pulsen") senden.
