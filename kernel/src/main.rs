@@ -16,6 +16,7 @@ mod gdt;
 mod interrupts;
 mod logo;
 mod memory;
+mod qpu;
 mod quantum;
 mod serial;
 mod shell;
