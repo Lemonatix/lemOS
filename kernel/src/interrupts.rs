@@ -5,7 +5,7 @@
 //! CPU reserviert (z. B. Page Fault). Ab 32 liegen die Hardware-Interrupts,
 //! die der PIC (Programmable Interrupt Controller) an die CPU weiterleitet.
 
-use core::sync::atomic::{AtomicU64, Ordering};
+use core::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 
 use pc_keyboard::{DecodedKey, HandleControl, PS2Keyboard, ScancodeSet1, layouts};
 use pic8259::ChainedPics;
@@ -125,7 +125,26 @@ fn end_of_interrupt(irq: Irq) {
 
 // --- CPU-Ausnahmen --------------------------------------------------------------
 
+static BREAKPOINTS: AtomicU64 = AtomicU64::new(0);
+/// Während des Selbsttests beim Start bleibt der Breakpoint-Handler still.
+static SELF_TEST: AtomicBool = AtomicBool::new(false);
+
+/// Prüft beim Start, ob die Ausnahmebehandlung funktioniert: Wir lösen
+/// absichtlich einen Breakpoint (`int3`) aus und schauen, ob der Handler
+/// gelaufen ist und die CPU danach normal weitermacht.
+pub fn test_exceptions() -> bool {
+    let before = BREAKPOINTS.load(Ordering::Relaxed);
+    SELF_TEST.store(true, Ordering::Relaxed);
+    x86_64::instructions::interrupts::int3();
+    SELF_TEST.store(false, Ordering::Relaxed);
+    BREAKPOINTS.load(Ordering::Relaxed) > before
+}
+
 extern "x86-interrupt" fn breakpoint(frame: InterruptStackFrame) {
+    BREAKPOINTS.fetch_add(1, Ordering::Relaxed);
+    if SELF_TEST.load(Ordering::Relaxed) {
+        return;
+    }
     // Ein Breakpoint ist harmlos: melden und einfach weitermachen.
     kprintln!(
         "Exception: breakpoint at {:#x}",

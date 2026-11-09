@@ -37,6 +37,16 @@ const COMMANDS: &[Command] = &[
         run: echo,
     },
     Command {
+        name: "q",
+        help: "quantum simulator with up to 16 qubits ('q' alone shows how)",
+        run: crate::quantum::command,
+    },
+    Command {
+        name: "qpu",
+        help: "virtual quantum processor: compile and run circuits as jobs",
+        run: crate::qpu::command::command,
+    },
+    Command {
         name: "reboot",
         help: "restarts the computer (right now it closes the terminal)",
         run: reboot,

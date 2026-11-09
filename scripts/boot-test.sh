@@ -2,7 +2,11 @@
 # Bootet lemOS ohne Bildschirm in QEMU und prüft:
 #   1. dass der Kernel startet und der Timer tickt ("lemOS: boot ok"),
 #   2. dass die Shell Tastendrücke annimmt und "echo" ausführt,
-#   3. dass "reboot" den Rechner neu startet (QEMU beendet sich dann wegen
+#   3. dass der Quanten-Simulator einen Bell-Zustand erzeugt und 16 Qubits
+#      in den Speicher passen,
+#   4. dass das virtuelle QPU einen GHZ-Schaltkreis korrekt kompiliert
+#      (Fidelity 1) und als Job ausführt,
+#   5. dass "reboot" den Rechner neu startet (QEMU beendet sich dann wegen
 #      -no-reboot von selbst).
 #
 # Aufruf: scripts/boot-test.sh <qemu> <qemu-optionen...>
@@ -52,6 +56,25 @@ type_keys() {
 wait_for "lemsh> " || finish "Boot-Test fehlgeschlagen: Shell startet nicht." 1
 type_keys e c h o spc h a l l o ret
 wait_for "^hallo" || finish "Boot-Test fehlgeschlagen: Tastatur oder echo funktioniert nicht." 1
+
+# Bell-Zustand: |00> und |11> mit je 50 %.
+type_keys q spc b e l l ret
+wait_for "|11>  +0.7071" || finish "Boot-Test fehlgeschlagen: q bell liefert keinen Bell-Zustand." 1
+
+# 16 Qubits, alle in Überlagerung, dann messen.
+type_keys q spc i n i t spc 1 6 ret
+wait_for "16 qubits ready" || finish "Boot-Test fehlgeschlagen: 16 Qubits passen nicht in den Speicher." 1
+type_keys q spc h spc 1 5 ret q spc m e a s u r e ret
+wait_for "Result: |" || finish "Boot-Test fehlgeschlagen: Messung über 16 Qubits klappt nicht." 1
+
+# GHZ auf dem virtuellen QPU. Achtung, deutsches Tastaturlayout: Die Taste
+# "y" liefert ein "z", also tippt "g h y" das Wort "ghz".
+type_keys q p u spc d e m o spc g h y ret
+wait_for "Loaded: h 0" || finish "Boot-Test fehlgeschlagen: qpu demo ghz klappt nicht." 1
+type_keys q p u spc c o m p a r e ret
+wait_for "ideal circuit: 1.000000" || finish "Boot-Test fehlgeschlagen: der QPU-Compiler verändert das Ergebnis." 1
+type_keys q p u spc r u n ret
+wait_for "^Took " || finish "Boot-Test fehlgeschlagen: qpu run liefert kein Ergebnis." 1
 
 type_keys r e b o o t ret
 for _ in $(seq 10); do

@@ -42,6 +42,9 @@ The name is inspired by my username <code>Lem</code>onatix, as well as
  - Lemon shell (lemsh)
    - [x] help, clear, echo, reboot
    - [ ] history, mem
+ - Quantum
+   - [x] state-vector simulator with up to 16 qubits (lemsh command `q`)
+   - [x] virtual QPU device: 4x4 qubit grid, native gates, compiler with routing, noise, job queue (lemsh command `qpu`)
  - Filesystem and basic I/O
  - GUI prototype
  - Package manager (lemonpkg?)
@@ -74,7 +77,7 @@ Run these from the `lemOS/` folder:
 make          # build the kernel and the bootable image build/lemos.iso
 make run      # start lemOS in QEMU (window plus serial output in your terminal)
 make run-nox  # start lemOS without a window, serial output only
-make test     # boot without a window, check boot, the shell and reboot
+make test     # boot without a window, check boot, the shell, the quantum simulator, the QPU and reboot
 make clean    # remove all build output
 ```
 
@@ -91,7 +94,9 @@ kernel/
 ├── src/interrupts.rs # IDT, CPU exceptions, PIC, timer (PIT) and PS/2 keyboard
 ├── src/memory.rs     # page tables and physical frames from the Limine memory map
 ├── src/allocator.rs  # kernel heap (Box, Vec, String)
-├── src/shell.rs      # lemsh, the shell: help, clear, echo, reboot
+├── src/shell.rs      # lemsh, the shell: help, clear, echo, q, reboot
+├── src/quantum.rs    # quantum simulator (state vector, up to 16 qubits)
+├── src/qpu/          # virtual QPU: circuits, chip topology, compiler, noise, jobs
 ├── src/logo.rs       # the lemon slice shown at boot
 ├── linker.ld         # places the kernel in the higher half
 └── rust-toolchain.toml
