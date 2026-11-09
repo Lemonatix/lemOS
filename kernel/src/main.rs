@@ -139,8 +139,12 @@ extern "C" fn kmain() -> ! {
     interrupts::init();
     kprintln!("GDT and IDT loaded.");
 
-    // Testet die Ausnahmebehandlung: der Handler meldet sich und kehrt zurück.
-    x86_64::instructions::interrupts::int3();
+    // Testet die Ausnahmebehandlung mit einem absichtlichen Breakpoint.
+    if interrupts::test_exceptions() {
+        kprintln!("Exception handling works.");
+    } else {
+        kprintln!("Warning: the breakpoint handler did not run.");
+    }
 
     x86_64::instructions::interrupts::enable();
     // Eine Zehntelsekunde warten, um zu sehen, dass der Timer tickt.
