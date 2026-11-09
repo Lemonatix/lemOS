@@ -157,7 +157,8 @@ impl Rng {
 
 static RNG: Mutex<Rng> = Mutex::new(Rng(0));
 
-fn random() -> f64 {
+/// Eine Zufallszahl in [0, 1), auch für das virtuelle QPU.
+pub fn random() -> f64 {
     RNG.lock().next_f64()
 }
 
@@ -244,6 +245,18 @@ impl State {
             let (a, b) = (self.amplitudes[i], self.amplitudes[j]);
             self.amplitudes[i] = gate[0][0] * a + gate[0][1] * b;
             self.amplitudes[j] = gate[1][0] * a + gate[1][1] * b;
+        }
+    }
+
+    /// Bringt die Summe aller Wahrscheinlichkeiten wieder auf 1. Nötig nach
+    /// nicht-unitären Operationen, z. B. beim Simulieren von Rauschen.
+    pub fn normalize(&mut self) {
+        let total: f64 = self.amplitudes.iter().map(|a| a.norm_sqr()).sum();
+        if total > 0.0 {
+            let factor = 1.0 / libm::sqrt(total);
+            for a in &mut self.amplitudes {
+                *a = a.scale(factor);
+            }
         }
     }
 
