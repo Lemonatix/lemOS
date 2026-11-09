@@ -12,8 +12,9 @@ use crate::memory;
 
 /// Startadresse des Heaps. Gut wiederzuerkennen, falls mal etwas abstürzt.
 pub const HEAP_START: u64 = 0x_4444_4444_0000;
-/// Größe des Heaps: 1 MiB reicht für die Shell locker.
-pub const HEAP_SIZE: usize = 1024 * 1024;
+/// Größe des Heaps: 4 MiB. Die Shell braucht kaum etwas, aber der
+/// Quanten-Simulator belegt bei 16 Qubits allein 1 MiB.
+pub const HEAP_SIZE: usize = 4 * 1024 * 1024;
 
 #[global_allocator]
 static ALLOCATOR: LockedHeap = LockedHeap::empty();
